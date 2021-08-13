@@ -4,7 +4,11 @@
   "main": "index.js",
   "author": "Fabio <fabioac71@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.15.0",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.6.1",
     "@typescript-eslint/eslint-plugin": "^4.29.1",
