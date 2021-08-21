@@ -1,4 +1,3 @@
-import faker from 'faker';
 import axios from 'axios';
 
 import { mockAxios } from 'infra/test';

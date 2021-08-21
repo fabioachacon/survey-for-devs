@@ -2,11 +2,14 @@ module.exports = {
   testEnvironment: 'jsdom',
   testPathIgnorePatterns: ['/node_modules/'],
   collectCoverage: true,
-  collectCoverageFrom: ['src/**/*.ts(x)?'],
+  collectCoverageFrom: ['src/**/*.ts(x)?', '!**/*.d.ts'],
   modulePaths: ['<rootDir>/src/'],
   preset: 'ts-jest',
   transform: {
     '^.+\\.(ts|tsx)?$': 'ts-jest',
-    "^.+\\.(js|jsx)$": "babel-jest",
+    '^.+\\.(js|jsx)$': 'babel-jest'
+  },
+  moduleNameMapper: {
+    '\\.scss$': 'identity-obj-proxy'
   }
-}
+};
