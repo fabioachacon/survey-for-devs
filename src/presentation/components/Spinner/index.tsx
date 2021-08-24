@@ -5,7 +5,11 @@ type SpinnerProps = React.HTMLAttributes<HTMLElement>;
 
 const Spinner = (props: SpinnerProps) => {
   return (
-    <div {...props} className={[Styles.spinner, props.className].join(' ')}>
+    <div
+      aria-label="spinner"
+      {...props}
+      className={[Styles.spinner, props.className].join(' ')}
+    >
       <div />
       <div />
       <div />
