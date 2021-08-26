@@ -6,8 +6,7 @@ import Context from 'presentation/contexts/form/form-context';
 
 const FormStatus = () => {
   const {
-    state: { isLoading },
-    errorState: { defaultError }
+    state: { isLoading, defaultError }
   } = useContext(Context);
 
   return (
