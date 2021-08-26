@@ -43,7 +43,7 @@ describe('<Login />', () => {
     expect(statusLabel).toHaveClass('error');
   });
 
-  test('should call Validation with correct value', () => {
+  test('should call Validation with correct email', () => {
     const { validationSpy } = makeSut();
     render(<Login validation={validationSpy} />);
 
