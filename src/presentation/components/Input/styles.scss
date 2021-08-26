@@ -14,9 +14,12 @@
     height: 15px;
     width: 15px;
     border-radius: 50%;
-    background-color: red;
     position: absolute;
     right: 8px;
     cursor: help;
+
+    &.error {
+      background-color: red;
+    }
   }
 }

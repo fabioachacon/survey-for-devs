@@ -5,14 +5,17 @@ import Styles from './styles.scss';
 import Context from 'presentation/contexts/form/form-context';
 
 const FormStatus = () => {
-  const { isLoading, errorMessage } = useContext(Context);
+  const {
+    state: { isLoading },
+    errorState: { defaultError }
+  } = useContext(Context);
 
   return (
     <div className={Styles.errorWrapper}>
       {isLoading && <Spinner className={Styles.spinner} />}
-      {errorMessage && (
+      {defaultError && (
         <span aria-label="error-message" className={Styles.error}>
-          {errorMessage}
+          {defaultError}
         </span>
       )}
     </div>

@@ -9,20 +9,21 @@ import {
   FormStatus
 } from 'presentation/components';
 
-type StateProps = {
-  isLoading: boolean;
-  errorMessage?: string;
-};
 const Login: React.FC = () => {
-  const [state] = useState<StateProps>({
-    isLoading: false,
-    errorMessage: ''
+  const [state] = useState({
+    isLoading: false
+  });
+
+  const [errorState] = useState({
+    defaultError: '',
+    email: 'Required field',
+    password: 'Require field'
   });
 
   return (
     <div className={Styles.login}>
       <LoginHeader />
-      <FormContext.Provider value={state}>
+      <FormContext.Provider value={{ state, errorState }}>
         <form className={Styles.form}>
           <h2>Login</h2>
           <Input type="email" name="email" placeholder="Type your e-mail" />
@@ -31,7 +32,7 @@ const Login: React.FC = () => {
             name="password"
             placeholder="Type your password"
           />
-          <button className={Styles.submit} type="submit">
+          <button disabled className={Styles.submit} type="submit">
             Entrar
           </button>
           <span className={Styles.link}>create an account</span>
