@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import FormContext from 'presentation/contexts/form/form-context';
 
+import FormContext from 'presentation/contexts/form/form-context';
+import { Validation } from 'presentation/validation/protocols';
 import Styles from './styles.scss';
 import {
   LoginHeader,
@@ -8,7 +9,6 @@ import {
   Input,
   FormStatus
 } from 'presentation/components';
-import { Validation } from 'presentation/validation/protocols';
 
 export type LoginProps = {
   validation: Validation;
@@ -27,6 +27,10 @@ const Login = ({ validation }: LoginProps) => {
   useEffect(() => {
     validation?.validate({ email: state.email });
   }, [state.email]);
+
+  useEffect(() => {
+    validation?.validate({ password: state.password });
+  }, [state.password]);
 
   return (
     <div className={Styles.login}>
