@@ -13,7 +13,21 @@ describe('<Login />', () => {
   test('should not render error message when there is no error', () => {
     render(<Login />);
 
-    const errorMessage = screen.queryByLabelText(/error-message/);
+    const errorMessage = screen.queryByLabelText(/error-message/i);
     expect(errorMessage).not.toBeInTheDocument();
+  });
+
+  test('should render a disabled button', () => {
+    render(<Login />);
+
+    const button = screen.getByRole('button', { name: /entrar/i });
+    expect(button).toHaveAttribute('disabled');
+  });
+
+  test('should render an error indicator', () => {
+    render(<Login />);
+
+    const statusLabel = screen.getByLabelText(/status-password/i);
+    expect(statusLabel).toHaveClass('error');
   });
 });
