@@ -1,33 +1,61 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Login from '.';
+import { Validation } from 'presentation/validation/protocols';
+
+type SutTypes = {
+  validationSpy: ValidationSpy;
+};
+
+class ValidationSpy implements Validation {
+  errorMessage: string;
+  input: object;
+
+  validate(input: object) {
+    this.input = input;
+    return this.errorMessage;
+  }
+}
+
+const makeSut = (): SutTypes => {
+  const validationSpy = new ValidationSpy();
+  return {
+    validationSpy
+  };
+};
 
 describe('<Login />', () => {
-  test('should not render the spinner when isLoading state is false', () => {
-    render(<Login />);
+  afterEach(cleanup);
+  test('should render the input with default state', () => {
+    const { validationSpy } = makeSut();
+    render(<Login validation={validationSpy} />);
 
     const spinner = screen.queryByLabelText(/spinner/i);
     expect(spinner).not.toBeInTheDocument();
-  });
-
-  test('should not render error message when there is no error', () => {
-    render(<Login />);
 
     const errorMessage = screen.queryByLabelText(/error-message/i);
     expect(errorMessage).not.toBeInTheDocument();
-  });
-
-  test('should render a disabled button', () => {
-    render(<Login />);
 
     const button = screen.getByRole('button', { name: /entrar/i });
     expect(button).toHaveAttribute('disabled');
-  });
-
-  test('should render an error indicator', () => {
-    render(<Login />);
 
     const statusLabel = screen.getByLabelText(/status-password/i);
     expect(statusLabel).toHaveClass('error');
+  });
+
+  test('should call Validation with correct value', () => {
+    const { validationSpy } = makeSut();
+    render(<Login validation={validationSpy} />);
+
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.input(emailInput, {
+      target: {
+        value: 'any_email'
+      }
+    });
+
+    expect(validationSpy.input).toEqual({
+      email: 'any_email'
+    });
   });
 });
