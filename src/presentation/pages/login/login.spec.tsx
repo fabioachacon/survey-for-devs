@@ -58,4 +58,20 @@ describe('<Login />', () => {
       email: 'any_email'
     });
   });
+
+  test('should call Validation with correct password', () => {
+    const { validationSpy } = makeSut();
+    render(<Login validation={validationSpy} />);
+
+    const passwordInput = screen.getByPlaceholderText('Password');
+    fireEvent.input(passwordInput, {
+      target: {
+        value: 'any_password'
+      }
+    });
+
+    expect(validationSpy.input).toEqual({
+      password: 'any_password'
+    });
+  });
 });
