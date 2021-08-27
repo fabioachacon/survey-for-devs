@@ -1,4 +1,5 @@
 import React from 'react';
+import faker from 'faker';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Login from '.';
 import { ValidationSpy } from 'presentation/test/mock-validation';
@@ -16,6 +17,7 @@ const makeSut = (): SutTypes => {
 
 describe('<Login />', () => {
   afterEach(cleanup);
+
   test('should render the input with default state', () => {
     const { validationSpy } = makeSut();
     render(<Login validation={validationSpy} />);
@@ -35,31 +37,33 @@ describe('<Login />', () => {
 
   test('should call Validation with correct email', () => {
     const { validationSpy } = makeSut();
+    const fakeEmail = faker.internet.email();
     render(<Login validation={validationSpy} />);
 
     const emailInput = screen.getByPlaceholderText('Email');
     fireEvent.input(emailInput, {
       target: {
-        value: 'any_email'
+        value: fakeEmail
       }
     });
 
     expect(validationSpy.fieldName).toBe('email');
-    expect(validationSpy.fieldValue).toBe('any_email');
+    expect(validationSpy.fieldValue).toBe(fakeEmail);
   });
 
   test('should call Validation with correct password', () => {
     const { validationSpy } = makeSut();
+    const fakePassword = faker.internet.password();
     render(<Login validation={validationSpy} />);
 
     const passwordInput = screen.getByPlaceholderText('Password');
     fireEvent.input(passwordInput, {
       target: {
-        value: 'any_password'
+        value: fakePassword
       }
     });
 
     expect(validationSpy.fieldName).toBe('password');
-    expect(validationSpy.fieldValue).toBe('any_password');
+    expect(validationSpy.fieldValue).toBe(fakePassword);
   });
 });
