@@ -7,8 +7,8 @@ const Spinner = (props: SpinnerProps) => {
   return (
     <div
       aria-label="spinner"
-      {...props}
       className={[Styles.spinner, props.className].join(' ')}
+      {...props}
     >
       <div />
       <div />

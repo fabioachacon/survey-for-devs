@@ -1,21 +1,11 @@
 import React from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import Login from '.';
-import { Validation } from 'presentation/validation/protocols';
+import { ValidationSpy } from 'presentation/test/mock-validation';
 
 type SutTypes = {
   validationSpy: ValidationSpy;
 };
-
-class ValidationSpy implements Validation {
-  errorMessage: string;
-  input: object;
-
-  validate(input: object) {
-    this.input = input;
-    return this.errorMessage;
-  }
-}
 
 const makeSut = (): SutTypes => {
   const validationSpy = new ValidationSpy();
@@ -54,9 +44,8 @@ describe('<Login />', () => {
       }
     });
 
-    expect(validationSpy.input).toEqual({
-      email: 'any_email'
-    });
+    expect(validationSpy.fieldName).toBe('email');
+    expect(validationSpy.fieldValue).toBe('any_email');
   });
 
   test('should call Validation with correct password', () => {
@@ -70,8 +59,7 @@ describe('<Login />', () => {
       }
     });
 
-    expect(validationSpy.input).toEqual({
-      password: 'any_password'
-    });
+    expect(validationSpy.fieldName).toBe('password');
+    expect(validationSpy.fieldValue).toBe('any_password');
   });
 });
