@@ -8,9 +8,8 @@ type SutTypes = {
   validationStub: ValidationStub;
 };
 
-const makeSut = (): SutTypes => {
+const makeSut = (error: string | null = null): SutTypes => {
   const validationStub = new ValidationStub();
-  const error = faker.random.words();
   validationStub.errorMessage = error;
 
   render(<Login validation={validationStub} />);
@@ -24,7 +23,8 @@ describe('<Login />', () => {
   afterEach(cleanup);
 
   test('should render the input with default state', () => {
-    const { validationStub } = makeSut();
+    const error = faker.random.words();
+    makeSut(error);
 
     const spinner = screen.queryByLabelText(/spinner/i);
     expect(spinner).not.toBeInTheDocument();
@@ -32,8 +32,8 @@ describe('<Login />', () => {
     const errorMessage = screen.queryByLabelText(/error-message/i);
     expect(errorMessage).not.toBeInTheDocument();
 
-    const button = screen.getByRole('button', { name: /entrar/i });
-    expect(button).toHaveAttribute('disabled');
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    expect(submitButton).toBeDisabled();
 
     const passwordStatusLabel = screen.getByLabelText(/password-status/i);
     expect(passwordStatusLabel).toHaveClass('error');
@@ -43,9 +43,8 @@ describe('<Login />', () => {
   });
 
   test('should show email error if Validations fails', () => {
-    const { validationStub } = makeSut();
-    const errorMessage = faker.random.words();
-    validationStub.errorMessage = errorMessage;
+    const error = faker.random.words();
+    const { validationStub } = makeSut(error);
 
     const mockEmail = faker.internet.email();
     const emailInput = screen.getByPlaceholderText('Email');
@@ -60,10 +59,8 @@ describe('<Login />', () => {
     expect(emailStatus).toHaveClass('error');
   });
 
-  test('should show valid Email indicator if Validation succeeds', () => {
-    const { validationStub } = makeSut();
-    const errorMessage = null;
-    validationStub.errorMessage = errorMessage;
+  test('should show valid email indicator if Validation succeeds', () => {
+    makeSut();
 
     const mockEmail = faker.internet.email();
     const emailInput = screen.getByPlaceholderText('Email');
@@ -76,5 +73,44 @@ describe('<Login />', () => {
     const emailStatus = screen.getByLabelText('email-status');
     expect(emailStatus).toHaveAttribute('title', 'Looking good!');
     expect(emailStatus).toHaveClass('success');
+  });
+
+  test('should show valid password indicator if Validation succeeds', () => {
+    makeSut();
+
+    const mockPassword = faker.internet.password();
+    const passwordInput = screen.getByPlaceholderText('Password');
+    fireEvent.input(passwordInput, {
+      target: {
+        value: mockPassword
+      }
+    });
+
+    const emailStatus = screen.getByLabelText('password-status');
+    expect(emailStatus).toHaveAttribute('title', 'Looking good!');
+    expect(emailStatus).toHaveClass('success');
+  });
+
+  test('should enable submit button if the form has valid inputs', () => {
+    makeSut();
+
+    const mockEmail = faker.internet.email();
+    const emailInput = screen.getByPlaceholderText('Email');
+    fireEvent.input(emailInput, {
+      target: {
+        value: mockEmail
+      }
+    });
+
+    const mockPassword = faker.internet.password();
+    const passwordInput = screen.getByPlaceholderText('Password');
+    fireEvent.input(passwordInput, {
+      target: {
+        value: mockPassword
+      }
+    });
+
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    expect(submitButton).toBeEnabled();
   });
 });
