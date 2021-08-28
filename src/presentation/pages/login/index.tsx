@@ -20,17 +20,21 @@ const Login = ({ validation }: LoginProps) => {
     email: '',
     password: '',
     defaultError: '',
-    emailError: 'Required field',
-    passwordError: 'Required field'
+    emailError: '',
+    passwordError: ''
   });
 
   useEffect(() => {
-    validation?.validate('email', state.email);
-  }, [state.email]);
+    setState({
+      ...state,
+      emailError: validation?.validate('email', state.email),
+      passwordError: validation?.validate('password', state.password)
+    });
+  }, [state.email, state.password]);
 
-  useEffect(() => {
-    validation?.validate('password', state.password);
-  }, [state.password]);
+  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+  };
 
   return (
     <div className={Styles.login}>
@@ -45,10 +49,17 @@ const Login = ({ validation }: LoginProps) => {
             placeholder="Email"
           />
           <Input type="password" name="password" placeholder="Password" />
-          <button disabled className={Styles.submit} type="submit">
+          <button
+            disabled={!!(state.emailError || state.passwordError)}
+            className={Styles.submit}
+            type="submit"
+            onClick={handleSubmit}
+          >
             Entrar
           </button>
-          <span className={Styles.link}>create an account</span>
+          <span className={Styles.link}>
+            Don't have an account? <a>create one</a>
+          </span>
           <FormStatus />
         </form>
       </FormContext.Provider>

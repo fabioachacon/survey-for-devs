@@ -1,4 +1,4 @@
-import React, { InputHTMLAttributes, useContext, useState } from 'react';
+import React, { InputHTMLAttributes, useContext } from 'react';
 import Styles from './styles.scss';
 import Context from 'presentation/contexts/form/form-context';
 
@@ -19,19 +19,27 @@ const Input = ({ name, ...props }: InputProps) => {
     });
   };
 
+  const getStatusIndicator = () => {
+    return `${Styles.status} ${!!error ? Styles.error : Styles.success}`;
+  };
+
+  const getStatusMessage = () => {
+    const success = 'Looking good!';
+    return error || success;
+  };
+
   return (
     <div className={Styles.inputWrapper}>
       <input
-        aria-label={`input-${name}`}
         readOnly
         onFocus={enableInput}
         onChange={handleChange}
         {...props}
       />
       <span
-        title={error}
-        aria-label={`status-${name}`}
-        className={`${Styles.status} ${!!error ? Styles.error : ''}`}
+        title={getStatusMessage()}
+        className={getStatusIndicator()}
+        aria-label={`${name}-status`}
       />
     </div>
   );

@@ -34,12 +34,13 @@
     .link {
       text-align: center;
       color: $primary;
-      text-transform: lowercase;
       margin-top: 16px;
-      cursor: pointer;
 
-      &:hover {
-        text-decoration: underline;
+      a {
+        cursor: pointer;
+        &:hover {
+          text-decoration: underline;
+        }
       }
     }
   }

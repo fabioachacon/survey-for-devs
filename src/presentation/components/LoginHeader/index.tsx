@@ -13,7 +13,7 @@ const LoginHeader = () => {
 };
 
 /**
- * The memo function prevents the component from being re-rendered
+ * The memo function prevents the component from be re-rendered
  * in case a parent component suffers a state update.
  */
 export default memo(LoginHeader);
