@@ -66,7 +66,7 @@ describe('<Login />', () => {
     expect(emailStatusLabel).toHaveClass('error');
   });
 
-  test('should show email error if Validations fails', () => {
+  test('should show email error if Validation fails', () => {
     const validationError = faker.random.words();
     const { validationStub } = makeSut(validationError);
 
@@ -110,6 +110,6 @@ describe('<Login />', () => {
     fireEvent.click(submitButton);
 
     const spinner = screen.queryByLabelText(/spinner/i);
-    expect(spinner).not.toBeInTheDocument();
+    expect(spinner).toBeInTheDocument();
   });
 });
