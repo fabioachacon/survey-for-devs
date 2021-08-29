@@ -1,24 +1,43 @@
 import React from 'react';
 import faker from 'faker';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+
 import Login from '.';
 import { ValidationStub } from 'presentation/test/mock-validation';
+import { Authentication, AuthenticationParams } from 'domain/usecases';
+import { AccountModel } from 'domain/models';
+import { mockAccountModel } from 'domain/test';
+
+class AuthenticationSpy implements Authentication {
+  account = mockAccountModel();
+  params: AuthenticationParams;
+
+  async auth(params: AuthenticationParams): Promise<AccountModel> {
+    this.params = params;
+    return this.account;
+  }
+}
 
 type SutTypes = {
   validationStub: ValidationStub;
+  authenticationSpy: AuthenticationSpy;
 };
 
 const makeSut = (validationError?: string): SutTypes => {
   const validationStub = new ValidationStub();
+  const authenticationSpy = new AuthenticationSpy();
   validationStub.errorMessage = validationError;
-  render(<Login validation={validationStub} />);
+  render(
+    <Login validation={validationStub} authentication={authenticationSpy} />
+  );
 
   return {
-    validationStub
+    validationStub,
+    authenticationSpy
   };
 };
 
-const setEmail = () => {
+const inputEmail = () => {
   const mockEmail = faker.internet.email();
   const emailInput = screen.getByPlaceholderText('Email');
   fireEvent.input(emailInput, {
@@ -26,9 +45,10 @@ const setEmail = () => {
       value: mockEmail
     }
   });
+  return mockEmail;
 };
 
-const setPassword = () => {
+const inputPassword = () => {
   const mockPassword = faker.internet.password();
   const passwordInput = screen.getByPlaceholderText('Password');
   fireEvent.input(passwordInput, {
@@ -36,11 +56,16 @@ const setPassword = () => {
       value: mockPassword
     }
   });
+  return mockPassword;
 };
 
-const setEmailAndPassword = () => {
-  setEmail();
-  setPassword();
+const inputEmailAndPassword = () => {
+  const mockEmail = inputEmail();
+  const mockPassword = inputPassword();
+  return {
+    mockEmail,
+    mockPassword
+  };
 };
 
 describe('<Login />', () => {
@@ -70,7 +95,7 @@ describe('<Login />', () => {
     const validationError = faker.random.words();
     const { validationStub } = makeSut(validationError);
 
-    setEmail();
+    inputEmail();
     const emailStatus = screen.getByLabelText('email-status');
     expect(emailStatus).toHaveAttribute('title', validationStub.errorMessage);
     expect(emailStatus).toHaveClass('error');
@@ -79,7 +104,7 @@ describe('<Login />', () => {
   test('should show valid email indicator if Validation succeeds', () => {
     makeSut();
 
-    setEmail();
+    inputEmail();
     const emailStatus = screen.getByLabelText('email-status');
     expect(emailStatus).toHaveAttribute('title', 'Looking good!');
     expect(emailStatus).toHaveClass('success');
@@ -88,7 +113,7 @@ describe('<Login />', () => {
   test('should show valid password indicator if Validation succeeds', () => {
     makeSut();
 
-    setPassword();
+    inputPassword();
     const emailStatus = screen.getByLabelText('password-status');
     expect(emailStatus).toHaveAttribute('title', 'Looking good!');
     expect(emailStatus).toHaveClass('success');
@@ -97,7 +122,7 @@ describe('<Login />', () => {
   test('should enable submit button if the form has valid inputs', () => {
     makeSut();
 
-    setEmailAndPassword();
+    inputEmailAndPassword();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     expect(submitButton).toBeEnabled();
   });
@@ -105,11 +130,23 @@ describe('<Login />', () => {
   test('should show spinner on submit', () => {
     makeSut();
 
-    setEmailAndPassword();
+    inputEmailAndPassword();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     fireEvent.click(submitButton);
 
     const spinner = screen.queryByLabelText(/spinner/i);
     expect(spinner).toBeInTheDocument();
+  });
+
+  test('should call Authentication with correct values', () => {
+    const { authenticationSpy } = makeSut();
+
+    const { mockEmail, mockPassword } = inputEmailAndPassword();
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.click(submitButton);
+    expect(authenticationSpy.params).toEqual({
+      email: mockEmail,
+      password: mockPassword
+    });
   });
 });
