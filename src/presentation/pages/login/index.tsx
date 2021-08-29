@@ -1,21 +1,23 @@
 import React, { useState, useEffect } from 'react';
 
 import FormContext from 'presentation/contexts/form/form-context';
-import { Validation } from 'presentation/validation/protocols';
 import Styles from './styles.scss';
 import {
   LoginHeader,
   Footer,
   Input,
-  FormStatus,
-  Spinner
+  FormStatus
 } from 'presentation/components';
+
+import { Validation } from 'presentation/validation/protocols';
+import { Authentication } from 'domain/usecases';
 
 export type LoginProps = {
   validation: Validation;
+  authentication: Authentication;
 };
 
-const Login = ({ validation }: LoginProps) => {
+const Login = ({ validation, authentication }: LoginProps) => {
   const [state, setState] = useState({
     isLoading: false,
     email: '',
@@ -39,6 +41,8 @@ const Login = ({ validation }: LoginProps) => {
       ...state,
       isLoading: true
     });
+
+    authentication.auth({ email: state.email, password: state.password });
   };
 
   return (
