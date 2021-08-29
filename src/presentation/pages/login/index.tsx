@@ -7,7 +7,8 @@ import {
   LoginHeader,
   Footer,
   Input,
-  FormStatus
+  FormStatus,
+  Spinner
 } from 'presentation/components';
 
 export type LoginProps = {
@@ -32,15 +33,19 @@ const Login = ({ validation }: LoginProps) => {
     });
   }, [state.email, state.password]);
 
-  const handleSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    setState({
+      ...state,
+      isLoading: true
+    });
   };
 
   return (
     <div className={Styles.login}>
       <LoginHeader />
       <FormContext.Provider value={{ state, setState }}>
-        <form className={Styles.form}>
+        <form className={Styles.form} onSubmit={handleSubmit}>
           <h2>Login</h2>
           <Input
             type="email"
@@ -52,8 +57,6 @@ const Login = ({ validation }: LoginProps) => {
           <button
             disabled={!!(state.emailError || state.passwordError)}
             className={Styles.submit}
-            type="submit"
-            onClick={handleSubmit}
           >
             Entrar
           </button>
