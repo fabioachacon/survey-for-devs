@@ -37,6 +37,8 @@ const Login = ({ validation, authentication }: LoginProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
+    if (state.isLoading) return;
+
     setState({
       ...state,
       isLoading: true
