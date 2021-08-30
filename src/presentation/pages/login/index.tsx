@@ -37,13 +37,16 @@ const Login = ({ validation, authentication }: LoginProps) => {
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
     event.preventDefault();
-    if (state.isLoading) return;
-
+    if (state.isLoading) {
+      return;
+    }
     setState({
       ...state,
       isLoading: true
     });
-    authentication?.auth({ email: state.email, password: state.password });
+    if (!(state.emailError || state.passwordError)) {
+      authentication?.auth({ email: state.email, password: state.password });
+    }
   };
 
   return (
