@@ -147,8 +147,19 @@ describe('<Login />', () => {
     authenticationSpy.auth = jest.fn(authenticationSpy.auth);
 
     const submitButton = screen.getByRole('button', { name: /entrar/i });
-    fireEvent.click(submitButton);
-    fireEvent.click(submitButton);
+    fireEvent.submit(submitButton);
+    fireEvent.submit(submitButton);
     expect(authenticationSpy.auth).not.toHaveBeenCalledTimes(2);
+  });
+
+  test('should not call auth method if form fields are invalid', () => {
+    const validationError = faker.random.words();
+    const { authenticationSpy } = makeSut(validationError);
+    authenticationSpy.auth = jest.fn(authenticationSpy.auth);
+
+    populateEmailField();
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.submit(submitButton);
+    expect(authenticationSpy.auth).toHaveBeenCalledTimes(0);
   });
 });
