@@ -41,8 +41,7 @@ const Login = ({ validation, authentication }: LoginProps) => {
       ...state,
       isLoading: true
     });
-
-    authentication.auth({ email: state.email, password: state.password });
+    authentication?.auth({ email: state.email, password: state.password });
   };
 
   return (
