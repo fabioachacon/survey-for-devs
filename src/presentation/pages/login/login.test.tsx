@@ -1,10 +1,18 @@
 import React from 'react';
 import faker from 'faker';
-import { render, screen, fireEvent, cleanup } from '@testing-library/react';
+import {
+  render,
+  screen,
+  fireEvent,
+  cleanup,
+  waitFor
+} from '@testing-library/react';
+import { act } from 'react-dom/test-utils';
 
 import Login from '.';
 import { ValidationStub } from 'presentation/test/mock-validation';
 import { AuthenticationSpy } from 'presentation/test/mock-authentication';
+import { InvalidCredentialsError } from 'domain/errors';
 
 type SutTypes = {
   validationStub: ValidationStub;
@@ -151,11 +159,28 @@ describe('<Login />', () => {
   test('should not call auth method if form fields are invalid', () => {
     const validationError = faker.random.words();
     const { authenticationSpy } = makeSut(validationError);
-    authenticationSpy.auth = jest.fn(authenticationSpy.auth);
+    authenticationSpy.auth = jest.fn();
 
     populateEmailField();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     fireEvent.submit(submitButton);
     expect(authenticationSpy.auth).toHaveBeenCalledTimes(0);
+  });
+
+  test('should show an error if authentication fails', async () => {
+    const { authenticationSpy } = makeSut();
+    const error = new InvalidCredentialsError();
+    jest
+      .spyOn(authenticationSpy, 'auth')
+      .mockReturnValueOnce(Promise.reject(error));
+
+    populateEmailField();
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.submit(submitButton);
+
+    await waitFor(() => {
+      const defaultError = screen.queryByLabelText('error-message');
+      expect(defaultError).toHaveTextContent(error.message);
+    });
   });
 });
