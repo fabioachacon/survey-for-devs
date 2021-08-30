@@ -25,7 +25,7 @@ const makeSut = (validationError?: string): SutTypes => {
   };
 };
 
-const inputEmail = () => {
+const populateEmailField = () => {
   const mockEmail = faker.internet.email();
   const emailInput = screen.getByPlaceholderText('Email');
   fireEvent.input(emailInput, {
@@ -36,7 +36,7 @@ const inputEmail = () => {
   return mockEmail;
 };
 
-const inputPassword = () => {
+const populatePasswordField = () => {
   const mockPassword = faker.internet.password();
   const passwordInput = screen.getByPlaceholderText('Password');
   fireEvent.input(passwordInput, {
@@ -47,13 +47,18 @@ const inputPassword = () => {
   return mockPassword;
 };
 
-const inputEmailAndPassword = () => {
-  const mockEmail = inputEmail();
-  const mockPassword = inputPassword();
+const populateEmailAndPasswordFields = () => {
+  const mockEmail = populateEmailField();
+  const mockPassword = populatePasswordField();
   return {
     mockEmail,
     mockPassword
   };
+};
+
+const simulateValidSubmit = () => {
+  const submitButton = screen.getByRole('button', { name: /entrar/i });
+  fireEvent.click(submitButton);
 };
 
 describe('<Login />', () => {
@@ -83,7 +88,7 @@ describe('<Login />', () => {
     const validationError = faker.random.words();
     const { validationStub } = makeSut(validationError);
 
-    inputEmail();
+    populateEmailField();
     const emailStatus = screen.getByLabelText('email-status');
     expect(emailStatus).toHaveAttribute('title', validationStub.errorMessage);
     expect(emailStatus).toHaveClass('error');
@@ -92,7 +97,7 @@ describe('<Login />', () => {
   test('should show valid email indicator if Validation succeeds', () => {
     makeSut();
 
-    inputEmail();
+    populateEmailField();
     const emailStatus = screen.getByLabelText('email-status');
     expect(emailStatus).toHaveAttribute('title', 'Looking good!');
     expect(emailStatus).toHaveClass('success');
@@ -101,7 +106,7 @@ describe('<Login />', () => {
   test('should show valid password indicator if Validation succeeds', () => {
     makeSut();
 
-    inputPassword();
+    populatePasswordField();
     const emailStatus = screen.getByLabelText('password-status');
     expect(emailStatus).toHaveAttribute('title', 'Looking good!');
     expect(emailStatus).toHaveClass('success');
@@ -110,7 +115,7 @@ describe('<Login />', () => {
   test('should enable submit button if the form has valid inputs', () => {
     makeSut();
 
-    inputEmailAndPassword();
+    populateEmailAndPasswordFields();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     expect(submitButton).toBeEnabled();
   });
@@ -118,9 +123,8 @@ describe('<Login />', () => {
   test('should show spinner on submit', () => {
     makeSut();
 
-    inputEmailAndPassword();
-    const submitButton = screen.getByRole('button', { name: /entrar/i });
-    fireEvent.click(submitButton);
+    populateEmailAndPasswordFields();
+    simulateValidSubmit();
 
     const spinner = screen.queryByLabelText(/spinner/i);
     expect(spinner).toBeInTheDocument();
@@ -129,12 +133,22 @@ describe('<Login />', () => {
   test('should call Authentication with correct values', () => {
     const { authenticationSpy } = makeSut();
 
-    const { mockEmail, mockPassword } = inputEmailAndPassword();
+    const { mockEmail, mockPassword } = populateEmailAndPasswordFields();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     fireEvent.click(submitButton);
     expect(authenticationSpy.params).toEqual({
       email: mockEmail,
       password: mockPassword
     });
+  });
+
+  test('should call Authentication only once', () => {
+    const { authenticationSpy } = makeSut();
+    authenticationSpy.auth = jest.fn(authenticationSpy.auth);
+
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.click(submitButton);
+    fireEvent.click(submitButton);
+    expect(authenticationSpy.auth).not.toHaveBeenCalledTimes(2);
   });
 });
