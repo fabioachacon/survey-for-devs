@@ -35,17 +35,30 @@ const Login = ({ validation, authentication }: LoginProps) => {
     });
   }, [state.email, state.password]);
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     event.preventDefault();
-    if (state.isLoading) {
-      return;
-    }
-    setState({
-      ...state,
-      isLoading: true
-    });
-    if (!(state.emailError || state.passwordError)) {
-      authentication?.auth({ email: state.email, password: state.password });
+    try {
+      if (state.isLoading) {
+        return;
+      }
+      setState({
+        ...state,
+        isLoading: true
+      });
+      if (!(state.emailError || state.passwordError)) {
+        await authentication?.auth({
+          email: state.email,
+          password: state.password
+        });
+      }
+    } catch (error) {
+      setState({
+        ...state,
+        isLoading: false,
+        defaultError: error.message
+      });
     }
   };
 
