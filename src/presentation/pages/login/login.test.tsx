@@ -56,11 +56,6 @@ const populateEmailAndPasswordFields = () => {
   };
 };
 
-const simulateValidSubmit = () => {
-  const submitButton = screen.getByRole('button', { name: /entrar/i });
-  fireEvent.click(submitButton);
-};
-
 describe('<Login />', () => {
   afterEach(cleanup);
 
@@ -124,7 +119,8 @@ describe('<Login />', () => {
     makeSut();
 
     populateEmailAndPasswordFields();
-    simulateValidSubmit();
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.click(submitButton);
 
     const spinner = screen.queryByLabelText(/spinner/i);
     expect(spinner).toBeInTheDocument();
