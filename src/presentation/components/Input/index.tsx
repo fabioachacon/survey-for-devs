@@ -31,10 +31,10 @@ const Input = ({ name, ...props }: InputProps) => {
   return (
     <div className={Styles.inputWrapper}>
       <input
+        {...props}
         readOnly
         onFocus={enableInput}
         onChange={handleChange}
-        {...props}
       />
       <span
         title={getStatusMessage()}

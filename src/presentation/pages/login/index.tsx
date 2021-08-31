@@ -48,10 +48,11 @@ const Login = ({ validation, authentication }: LoginProps) => {
         isLoading: true
       });
       if (!(state.emailError || state.passwordError)) {
-        await authentication?.auth({
+        const account = await authentication?.auth({
           email: state.email,
           password: state.password
         });
+        localStorage.setItem('accessToken', account.accessToken);
       }
     } catch (error) {
       setState({
@@ -66,7 +67,11 @@ const Login = ({ validation, authentication }: LoginProps) => {
     <div className={Styles.login}>
       <LoginHeader />
       <FormContext.Provider value={{ state, setState }}>
-        <form className={Styles.form} onSubmit={handleSubmit}>
+        <form
+          className={Styles.form}
+          onSubmit={handleSubmit}
+          aria-label="main-form"
+        >
           <h2>Login</h2>
           <Input
             type="email"
