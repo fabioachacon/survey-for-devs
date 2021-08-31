@@ -1,5 +1,6 @@
 import React from 'react';
 import faker from 'faker';
+
 import {
   render,
   screen,
@@ -7,7 +8,6 @@ import {
   cleanup,
   waitFor
 } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 
 import Login from '.';
 import { ValidationStub } from 'presentation/test/mock-validation';
@@ -66,6 +66,9 @@ const populateEmailAndPasswordFields = () => {
 
 describe('<Login />', () => {
   afterEach(cleanup);
+  beforeEach(() => {
+    localStorage.clear();
+  });
 
   test('should render the input with default state', () => {
     const validationError = faker.random.words();
@@ -181,6 +184,21 @@ describe('<Login />', () => {
     await waitFor(() => {
       const defaultError = screen.queryByLabelText('error-message');
       expect(defaultError).toHaveTextContent(error.message);
+    });
+  });
+
+  test('should add accessToke to localstorage on success', async () => {
+    const { authenticationSpy } = makeSut();
+
+    populateEmailAndPasswordFields();
+    const submitButton = screen.getByRole('button', { name: /entrar/i });
+    fireEvent.submit(submitButton);
+
+    await waitFor(() => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        'accessToken',
+        authenticationSpy.account.accessToken
+      );
     });
   });
 });
