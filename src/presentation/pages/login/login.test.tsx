@@ -20,7 +20,7 @@ type SutTypes = {
   authenticationSpy: AuthenticationSpy;
 };
 
-const history = createMemoryHistory();
+const history = createMemoryHistory({ initialEntries: ['/login'] });
 const makeSut = (validationError?: string): SutTypes => {
   const validationStub = new ValidationStub();
   const authenticationSpy = new AuthenticationSpy();
@@ -30,7 +30,6 @@ const makeSut = (validationError?: string): SutTypes => {
       <Login validation={validationStub} authentication={authenticationSpy} />
     </Router>
   );
-
   return {
     validationStub,
     authenticationSpy
@@ -204,10 +203,13 @@ describe('<Login />', () => {
         authenticationSpy.account.accessToken
       );
     });
+
+    expect(history).toHaveLength(1);
+    expect(history.location.pathname).toBe('/');
   });
 
   test('should go to signup page', async () => {
-    const { authenticationSpy } = makeSut();
+    makeSut();
 
     const register = screen.getByRole('link', { name: /signup/i });
     fireEvent.click(register);
@@ -215,4 +217,14 @@ describe('<Login />', () => {
     expect(history).toHaveLength(2);
     expect(history.location.pathname).toBe('/signup');
   });
+
+  // test('should ', () => {
+  //   makeSut();
+
+  //   const register = screen.getByRole('link', { name: /signup/i });
+  //   fireEvent.click(register);
+
+  //   expect(history).toHaveLength(1);
+  //   expect(history.location.pathname).toBe('/');
+  // });
 });
