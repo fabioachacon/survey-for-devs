@@ -1,6 +1,7 @@
 import React from 'react';
 import faker from 'faker';
-
+import { Router } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 import {
   render,
   screen,
@@ -19,12 +20,15 @@ type SutTypes = {
   authenticationSpy: AuthenticationSpy;
 };
 
+const history = createMemoryHistory();
 const makeSut = (validationError?: string): SutTypes => {
   const validationStub = new ValidationStub();
   const authenticationSpy = new AuthenticationSpy();
   validationStub.errorMessage = validationError;
   render(
-    <Login validation={validationStub} authentication={authenticationSpy} />
+    <Router history={history}>
+      <Login validation={validationStub} authentication={authenticationSpy} />
+    </Router>
   );
 
   return {
@@ -200,5 +204,15 @@ describe('<Login />', () => {
         authenticationSpy.account.accessToken
       );
     });
+  });
+
+  test('should go to signup page', async () => {
+    const { authenticationSpy } = makeSut();
+
+    const register = screen.getByRole('link', { name: /signup/i });
+    fireEvent.click(register);
+
+    expect(history).toHaveLength(2);
+    expect(history.location.pathname).toBe('/signup');
   });
 });
