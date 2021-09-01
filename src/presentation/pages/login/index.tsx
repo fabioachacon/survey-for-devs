@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import FormContext from 'presentation/contexts/form/form-context';
 import Styles from './styles.scss';
@@ -87,7 +88,10 @@ const Login = ({ validation, authentication }: LoginProps) => {
             Entrar
           </button>
           <span className={Styles.link}>
-            Don't have an account? <a>create one</a>
+            Don't have an account?{' '}
+            <Link aria-label="signup" to="/signup">
+              create one
+            </Link>
           </span>
           <FormStatus />
         </form>
