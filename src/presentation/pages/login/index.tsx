@@ -10,8 +10,8 @@ import {
   FormStatus
 } from 'presentation/components';
 
-import { Validation } from 'presentation/validation/protocols';
 import { Authentication } from 'domain/usecases';
+import { Validation } from 'validation/protocols/validation';
 
 export type LoginProps = {
   validation: Validation;

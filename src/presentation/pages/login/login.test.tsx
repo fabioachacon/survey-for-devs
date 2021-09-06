@@ -170,7 +170,7 @@ describe('<Login />', () => {
     populateEmailField();
     const submitButton = screen.getByRole('button', { name: /entrar/i });
     fireEvent.submit(submitButton);
-    expect(authenticationSpy.auth).toHaveBeenCalledTimes(0);
+    expect(authenticationSpy.auth).not.toHaveBeenCalled();
   });
 
   test('should show an error if authentication fails', async () => {
@@ -203,7 +203,6 @@ describe('<Login />', () => {
         authenticationSpy.account.accessToken
       );
     });
-
     expect(history).toHaveLength(1);
     expect(history.location.pathname).toBe('/');
   });
@@ -217,14 +216,4 @@ describe('<Login />', () => {
     expect(history).toHaveLength(2);
     expect(history.location.pathname).toBe('/signup');
   });
-
-  // test('should ', () => {
-  //   makeSut();
-
-  //   const register = screen.getByRole('link', { name: /signup/i });
-  //   fireEvent.click(register);
-
-  //   expect(history).toHaveLength(1);
-  //   expect(history.location.pathname).toBe('/');
-  // });
 });
