@@ -1,30 +1,26 @@
-import { FieldValidation } from 'validation/protocols/field-validation';
-import { RequiredFieldValidation } from '../required-field/required-field-validation';
-
-class ValidationBuilder {
-  private constructor(
-    private readonly fieldName: string,
-    private readonly validations: FieldValidation[]
-  ) {}
-
-  static field(fieldName: string): ValidationBuilder {
-    return new ValidationBuilder(fieldName, []);
-  }
-
-  required(): ValidationBuilder {
-    this.validations.push(new RequiredFieldValidation(this.fieldName));
-    return this;
-  }
-
-  build(): FieldValidation[] {
-    return this.validations;
-  }
-}
+import {
+  RequiredFieldValidation,
+  EmailValidation,
+  MinLengthValidation
+} from 'validation/validators';
+import { ValidationBuilder as sut } from './validation-builder';
 
 describe('ValidationBuilder', () => {
   test('should return RequiredFieldValidation', () => {
-    const validations = ValidationBuilder.field('any_field').required().build();
+    const validations = sut.field('any_field').required().build();
 
     expect(validations).toEqual([new RequiredFieldValidation('any_field')]);
+  });
+
+  test('should return EmailValidation', () => {
+    const validations = sut.field('any_field').email().build();
+
+    expect(validations).toEqual([new EmailValidation('any_field')]);
+  });
+
+  test('should return EmailValidation', () => {
+    const validations = sut.field('any_field').minLength().build();
+
+    expect(validations).toEqual([new MinLengthValidation('any_field', 20)]);
   });
 });
