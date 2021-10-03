@@ -2,11 +2,17 @@ import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Login } from 'presentation/pages';
 
-const Router = () => {
+type RouterProps = {
+  makeLogin: React.FC;
+};
+
+const Router = (props: RouterProps) => {
+  const { makeLogin } = props;
+
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/login" component={Login} />
+        <Route exact path="/login" component={makeLogin} />
       </Switch>
     </BrowserRouter>
   );
