@@ -1,4 +1,3 @@
-import { render, screen } from '@testing-library/react';
 import { RequiredFieldError } from 'validation/errors';
 import { RequiredFieldValidation } from './required-field-validation';
 import faker from 'faker';

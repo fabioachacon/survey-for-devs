@@ -5,6 +5,12 @@ import {
   MinLengthValidation
 } from 'validation/validators';
 
+/**
+ * A class with a private constructor cannot be used to create
+ * objects with the `new` keyword, outside the class scope.
+ * Instances of this class can only be created inside the class body.
+ */
+
 export class ValidationBuilder {
   private constructor(
     private readonly fieldName: string,

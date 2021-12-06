@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { Login } from 'presentation/pages';
 
 type RouterProps = {
-  makeLogin: React.FC;
+  makeLogin: FunctionComponent;
 };
 
 const Router = (props: RouterProps) => {
