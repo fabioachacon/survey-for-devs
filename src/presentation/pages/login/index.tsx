@@ -37,7 +37,7 @@ const Login = ({ validation, authentication }: LoginProps) => {
     });
   }, [state.email, state.password]);
 
-  const handleSubmit = async (
+  const handleOnSubmit = async (
     event: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     event.preventDefault();
@@ -72,7 +72,7 @@ const Login = ({ validation, authentication }: LoginProps) => {
       <FormContext.Provider value={{ state, setState }}>
         <form
           className={Styles.form}
-          onSubmit={handleSubmit}
+          onSubmit={handleOnSubmit}
           aria-label="main-form"
         >
           <h2>Login</h2>
