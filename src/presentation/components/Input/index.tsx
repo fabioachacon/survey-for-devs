@@ -32,7 +32,7 @@ const Input = ({ name, ...props }: InputProps) => {
     <div className={Styles.inputWrapper}>
       <input
         {...props}
-        aria-label={`input-${name}`}
+        aria-label={name}
         readOnly
         onFocus={enableInput}
         onChange={handleChange}
