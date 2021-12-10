@@ -7,7 +7,7 @@ import {
 
 /**
  * A class with a private constructor cannot be used to create
- * objects with the `new` keyword, outside the class scope.
+ * instances with the `new` keyword, outside the class scope.
  * Instances of this class can only be created inside the class body.
  */
 
